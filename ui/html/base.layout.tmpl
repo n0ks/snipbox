@@ -1,0 +1,30 @@
+{{define "base"}}
+<!doctype html>
+<html lang='en'>
+
+<head>
+  <meta charset='utf-8'>
+  <link rel='stylesheet' href='/static/css/main.css'>
+  <link rel="shortcut icon" type="image/x-icon" href="/static/img/favicon.ico">
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700'>
+  <script defer src="/static/js/main.js" type="text/javascript"> </script>
+  <title>{{template "title" .}} - Snippetbox</title>
+</head>
+
+<body>
+  <header>
+    <h1><a href='/'>Snippetbox</a></h1>
+  </header>
+  <nav>
+    <a href='/'>Home</a>
+  </nav>
+  <main>
+    {{template "main" .}}
+  </main>
+
+  {{template "footer" .}}
+</body>
+
+
+</html>
+{{end}}
