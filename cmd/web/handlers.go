@@ -34,7 +34,15 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		)
 	}
 
-	err = t.Execute(w, nil)
+	s, err := app.snippets.Latest()
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	data := &templateData{Snippets: s}
+
+	err = t.Execute(w, data)
 	if err != nil {
 		app.errorLog.Println(err.Error())
 
@@ -66,7 +74,26 @@ func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprint(w, "%v", s)
+	data := &templateData{
+		Snippet: s,
+	}
+
+	files := []string{
+		"./ui/html/show.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	err = ts.Execute(w, data)
+	if err != nil {
+		app.serverError(w, err)
+	}
 }
 
 func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
@@ -76,8 +103,6 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 		app.clientError(w, http.StatusMethodNotAllowed)
 		return
 	}
-
-	w.Write([]byte("Create a new snippet..."))
 
 	id, err := app.snippets.Insert("O snail", "Dummy", "7")
 	if err != nil {

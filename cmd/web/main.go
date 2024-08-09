@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -73,6 +74,7 @@ func main() {
 	}
 
 	infoLog.Printf("Starting server on %s", *addr)
+	fmt.Printf("Running...")
 
 	err = server.ListenAndServe()
 
