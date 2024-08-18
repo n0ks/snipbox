@@ -32,9 +32,14 @@ func (m *SnippetModel) Insert(title, content, expires string) (int, error) {
 }
 
 func (m *SnippetModel) Get(id int) (*models.Snippet, error) {
+	// query := `
+	//    SELECT id, title, content ,created, expires FROM snippets
+	//    WHERE expires > UTC_TIMESTAMP() and id = ?
+	//  `
+
 	query := `
     SELECT id, title, content ,created, expires FROM snippets
-    WHERE expires > UTC_TIMESTAMP() and id = ?
+    WHERE id = ?
   `
 
 	s := &models.Snippet{}
@@ -55,11 +60,10 @@ func (m *SnippetModel) Get(id int) (*models.Snippet, error) {
 
 func (m *SnippetModel) Latest() ([]*models.Snippet, error) {
 	query := `
-    SELECT id, title, content ,created, expires FROM snippets
+    SELECT id, title, content, created, expires FROM snippets
     ORDER BY created DESC LIMIT 10
   `
 	rows, err := m.DB.Query(query)
-
 	if err != nil {
 		return nil, err
 	}
@@ -83,9 +87,8 @@ func (m *SnippetModel) Latest() ([]*models.Snippet, error) {
 			return nil, err
 		}
 
-		return snippets, nil
-
 	}
 
-	return nil, nil
+	return snippets, nil
+
 }

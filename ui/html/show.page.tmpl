@@ -3,18 +3,20 @@
 {{define "title"}}Snippet #{{.Snippet.ID}}{{end}}
 
 {{define "main"}}
-  {{with .Snippet}}
-    <div class='snippet'>
-      <div class='metadata'>
-        <strong>{{.Title}}</strong>
-        <span>#{{.ID}}</span>
-      </div>
-      <pre><code>{{.Content}}</code></pre>
-      <div class='metadata'>
-        <time>Created: {{.Created}}</time>
-        <time>Expires: {{.Expires}}</time>
-        <p>Expires: {{.Created.Weekday}}</p>
-      </div>
-    </div>
-  {{end}}
+{{with .Snippet}}
+<div class='snippet'>
+  <div class='metadata'>
+    <strong>{{.Title}}</strong>
+    <span>#{{.ID}}</span>
+  </div>
+  <pre><code>{{.Content}}</code></pre>
+  <div class='metadata'>
+    <time>Created: {{humanDate .Created}}</time>
+    <br>
+    <time>Expires: {{humanDate .Expires}}</time>
+    <br>
+    <p>Expires: {{.Created.Weekday}}</p>
+  </div>
+</div>
+{{end}}
 {{end}}

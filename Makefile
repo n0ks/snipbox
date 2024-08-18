@@ -3,7 +3,7 @@ fmt:
 	go fmt ./cmd/web
 
 run: 
-	go run ./cmd/web
+	go run ./cmd/web/
 
 watch:
 	air .

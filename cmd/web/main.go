@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -14,9 +15,10 @@ import (
 )
 
 type application struct {
-	errorLog *log.Logger
-	infoLog  *log.Logger
-	snippets *mysql.SnippetModel
+	errorLog      *log.Logger
+	infoLog       *log.Logger
+	snippets      *mysql.SnippetModel
+	templateCache map[string]*template.Template
 }
 
 func openDB(dsn string) (*sql.DB, error) {
@@ -42,12 +44,10 @@ func main() {
 
 	flag.Parse()
 
-	f, err := os.OpenFile("./tmp/info.log", os.O_RDWR|os.O_CREATE, 0o666)
+	f, err := os.OpenFile("./tmp/info.log", os.O_RDWR|os.O_CREATE, 0666)
 
 	infoLog := log.New(f, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(f, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-
-	infoLog.Print("Should i codesign?")
 
 	if err != nil {
 		errorLog.Fatal(err)
@@ -61,10 +61,16 @@ func main() {
 	defer f.Close()
 	defer db.Close()
 
+	templateCache, err := newTemplateCache("./ui/html/")
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+
 	app := &application{
-		errorLog: errorLog,
-		infoLog:  infoLog,
-		snippets: &mysql.SnippetModel{DB: db},
+		errorLog:      errorLog,
+		infoLog:       infoLog,
+		snippets:      &mysql.SnippetModel{DB: db},
+		templateCache: templateCache,
 	}
 
 	server := &http.Server{
