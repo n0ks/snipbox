@@ -36,6 +36,7 @@ func openDB(dsn string) (*sql.DB, error) {
 
 func main() {
 	addr := flag.String("addr", "localhost:4000", "HTTP network address")
+
 	dsn := flag.String(
 		"dsn",
 		"web:password@/snippetbox?parseTime=true",
