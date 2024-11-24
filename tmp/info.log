@@ -1,2 +1,1 @@
-INFO	2024/07/22 10:29:07 Starting server on :4000
- driver "mysql" (forgotten import?)
+ERROR	2024/11/24 20:37:54 main.go:59: Error 1045 (28000): Access denied for user 'web'@'localhost' (using password: YES)
