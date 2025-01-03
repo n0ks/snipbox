@@ -39,7 +39,7 @@ func main() {
 
 	dsn := flag.String(
 		"dsn",
-		"web:password@/snippetbox?parseTime=true",
+		"web:asd4d45aw1@(localhost:3306)/snippetbox?parseTime=true",
 		"MySQL data source name testing",
 	)
 
