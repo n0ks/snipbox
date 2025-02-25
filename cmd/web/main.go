@@ -45,7 +45,7 @@ func main() {
 
 	flag.Parse()
 
-	f, err := os.OpenFile("./tmp/info.log", os.O_RDWR|os.O_CREATE, 0666)
+	f, err := os.OpenFile("./tmp/info.log", os.O_RDWR|os.O_CREATE, 0o666)
 
 	infoLog := log.New(f, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(f, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
