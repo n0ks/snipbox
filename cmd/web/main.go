@@ -8,8 +8,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/golangcollege/sessions"
 
 	"github.com/n0ks/snipbox/pkg/models/mysql"
 )
@@ -19,6 +21,7 @@ type application struct {
 	infoLog       *log.Logger
 	snippets      *mysql.SnippetModel
 	templateCache map[string]*template.Template
+	session       *sessions.Session
 }
 
 func openDB(dsn string) (*sql.DB, error) {
@@ -36,6 +39,8 @@ func openDB(dsn string) (*sql.DB, error) {
 
 func main() {
 	addr := flag.String("addr", "localhost:4000", "HTTP network address")
+
+	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret Sauce")
 
 	dsn := flag.String(
 		"dsn",
@@ -67,11 +72,15 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
+	session := sessions.New([]byte(*secret))
+	session.Lifetime = 12 * time.Hour
+
 	app := &application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
 		snippets:      &mysql.SnippetModel{DB: db},
 		templateCache: templateCache,
+		session:       session,
 	}
 
 	server := &http.Server{
