@@ -40,11 +40,12 @@ func openDB(dsn string) (*sql.DB, error) {
 func main() {
 	addr := flag.String("addr", "localhost:4000", "HTTP network address")
 
+	// of course this should be in an env var, but im lazy as this is only a learning project
 	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret Sauce")
 
 	dsn := flag.String(
 		"dsn",
-		"web:asd4d45aw1@(localhost:3306)/snippetbox?parseTime=true",
+		"web:password@(localhost:3306)/snippetbox?parseTime=true",
 		"MySQL data source name testing",
 	)
 
@@ -74,6 +75,7 @@ func main() {
 
 	session := sessions.New([]byte(*secret))
 	session.Lifetime = 12 * time.Hour
+	session.Secure = true
 
 	app := &application{
 		errorLog:      errorLog,
@@ -92,7 +94,7 @@ func main() {
 	infoLog.Printf("Starting server on %s", *addr)
 	fmt.Printf("Running...")
 
-	err = server.ListenAndServe()
+	err = server.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 
 	errorLog.Fatal(err)
 }
